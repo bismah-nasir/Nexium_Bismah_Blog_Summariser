@@ -1,22 +1,3 @@
-// utils/urduDictionary.ts
-// export const urduDictionary: { [key: string]: string } = {
-//     "This is a blog post": "یہ ایک بلاگ پوسٹ ہے",
-//     "It talks about technology": "یہ ٹیکنالوجی کے بارے میں بات کرتا ہے",
-//     summary: "خلاصہ",
-//     hello: "ہیلو",
-//     // ... more mappings
-// };
-
-// export const translateToUrdu = (text: string): string => {
-//     let translatedText = text;
-//     for (const [english, urdu] of Object.entries(urduDictionary)) {
-//         translatedText = translatedText.replace(new RegExp(english, "g"), urdu);
-//     }
-//     return translatedText;
-// };
-
-// utils/urduDictionary.ts
-
 // This is your word-based English to Urdu dictionary.
 // You will need to expand this dictionary significantly with common words
 // and technical terms relevant to the blogs you're summarizing.
