@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { translateToUrdu } from "../../../utils/urduDictionary";
 import { supabase } from "../../../lib/supabase";
 import { getFullTextCollection } from "../../../models/FullText";
-// import { getFullTextCollection } from "@/models/FullText";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -55,15 +54,6 @@ export async function POST(req: NextRequest) {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // Craft a good prompt for summarization
-        // const prompt = `Summarize the following blog post content in English. Keep the summary concise and informative, around 3-5 sentences.
-
-        // Blog Post Content:
-        // """
-        // ${fullText}
-        // """
-
-        // Concise Summary:`;
-
         const prompt = `Summarize the following blog post content in English. Provide a detailed and comprehensive summary that covers all the key arguments, steps, and conclusions presented in the article. Aim for a length of approximately 200-300 words.
 
         Blog Post Content:
