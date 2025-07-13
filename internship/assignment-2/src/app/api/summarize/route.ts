@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { translateToUrdu } from "../../../utils/urduDictionary";
 import { supabase } from "../../../lib/supabase";
-import { getFullTextCollection } from "@/models/FullText"; // Import the function to get the collection
+import { getFullTextCollection } from "../../../models/FullText";
+// import { getFullTextCollection } from "@/models/FullText";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function POST(req: NextRequest) {
     try {
@@ -9,15 +13,19 @@ export async function POST(req: NextRequest) {
 
         // Basic validation (though page.tsx also does this, it's good to double-check on the server)
         if (!url || !/^https?:\/\/.+\..+/.test(url)) {
-            return NextResponse.json({ error: "Invalid URL format provided." }, { status: 400 });
+            return NextResponse.json(
+                { error: "Invalid URL format provided." },
+                { status: 400 }
+            );
         }
 
         // 1. Scrape Text (internal API call)
-        const scrapeResponse = await fetch("http://localhost:3000/api/scrape", { // Use full URL in development
-        // For production on Vercel, this will typically resolve correctly without http://localhost:3000
-        // You might need to adjust this depending on your Vercel setup (e.g., process.env.VERCEL_URL)
-        // or just use '/api/scrape' and rely on Vercel's internal routing.
-        // For local development, 'http://localhost:3000' is necessary.
+        const scrapeResponse = await fetch("http://localhost:3000/api/scrape", {
+            // Use full URL in development
+            // For production on Vercel, this will typically resolve correctly without http://localhost:3000
+            // You might need to adjust this depending on your Vercel setup (e.g., process.env.VERCEL_URL)
+            // or just use '/api/scrape' and rely on Vercel's internal routing.
+            // For local development, 'http://localhost:3000' is necessary.
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ url }),
@@ -27,32 +35,58 @@ export async function POST(req: NextRequest) {
             const errorData = await scrapeResponse.json();
             throw new Error(errorData.error || "Failed to scrape blog post.");
         }
+
         const { fullText } = await scrapeResponse.json();
 
         if (!fullText) {
-            return NextResponse.json({ error: "No content was scraped from the provided URL." }, { status: 404 });
+            return NextResponse.json(
+                { error: "No content was scraped from the provided URL." },
+                { status: 404 }
+            );
         }
 
-        // 2. Simulate AI Summary (Static Logic)
-        // Taking the first two sentences as a simple summary
-        const sentences = fullText.split(/(?<=[.?!])\s+/); // Split by sentence-ending punctuation followed by space
-        const englishSummary = sentences.slice(0, Math.min(2, sentences.length)).join(". ") + (sentences.length > 0 ? "." : "");
-        // Ensure summary ends with a period if sentences exist
+        // --- ADD THIS CONSOLE.LOG HERE ---
+        console.log("--- Full Text sent to Gemini ---");
+        console.log(fullText.substring(0, 1000) + "..."); // Log first 1000 characters to avoid flooding console
+        console.log("--- End Full Text ---");
+        // --- END CONSOLE.LOG ---
 
-        if (englishSummary.length < 10) { // Simple check for very short or empty summaries
-            console.warn(`Generated summary is very short for URL: ${url}. Summary: "${englishSummary}"`);
-            // You might decide to throw an error here or just proceed.
-        }
+        // 2. Simulate AI Summary
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+        // Craft a good prompt for summarization
+        // const prompt = `Summarize the following blog post content in English. Keep the summary concise and informative, around 3-5 sentences.
+
+        // Blog Post Content:
+        // """
+        // ${fullText}
+        // """
+
+        // Concise Summary:`;
+
+        const prompt = `Summarize the following blog post content in English. Provide a detailed and comprehensive summary that covers all the key arguments, steps, and conclusions presented in the article. Aim for a length of approximately 200-300 words.
+
+        Blog Post Content:
+        """
+        ${fullText}
+        """
+
+        Detailed Summary:`;
+
+        const model_result = await model.generateContent(prompt);
+        const response = await model_result.response;
+        const englishSummary = response.text().trim(); // Get the text from the model's response
 
         // 3. Translate to Urdu
         const urduSummary = translateToUrdu(englishSummary);
         if (!urduSummary) {
-             console.warn(`Urdu translation resulted in an empty string for URL: ${url}`);
+            console.warn(
+                `Urdu translation resulted in an empty string for URL: ${url}`
+            );
         }
 
-
         // 4. Save summary in Supabase
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { data: supabaseData, error: supabaseError } = await supabase
             .from("summaries")
             .insert([
@@ -90,7 +124,11 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Summarize API Error:", error); // Log the full error on the server
         return NextResponse.json(
-            { error: error.message || "An unexpected error occurred during summarization." },
+            {
+                error:
+                    error.message ||
+                    "An unexpected error occurred during summarization.",
+            },
             { status: 500 }
         );
     }
