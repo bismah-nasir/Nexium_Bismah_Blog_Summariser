@@ -9,7 +9,8 @@ import {
     CardHeader,
     CardTitle,
 } from "../components/ui/card";
-import { toast } from "sonner"; // Assuming sonner is already set up in your project
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 // Define props for BlogForm
 interface BlogFormProps {
@@ -95,27 +96,41 @@ export default function BlogForm({
     };
 
     return (
-        <Card className="mb-8">
-            <CardHeader>
-                <CardTitle>Enter Blog URL</CardTitle>
+        <Card className="mb-8 shadow-xl rounded-xl bg-white/90 backdrop-blur-sm border border-gray-200">
+            <CardHeader className="pb-4">
+                <CardTitle className="text-2xl font-semibold text-gray-800">
+                    Enter Blog URL
+                </CardTitle>
+                <p className="text-gray-600 text-sm mt-2">
+                    Paste the URL of a blog post below to get a concise summary
+                    in English and Urdu.
+                </p>
             </CardHeader>
             <CardContent>
-                <form onSubmit={handleSubmit} className="flex gap-4">
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col sm:flex-row gap-4">
                     <Input
                         type="url"
                         placeholder="e.g., https://example.com/blog-post"
                         value={blogUrl}
                         onChange={(e) => setBlogUrl(e.target.value)}
                         required
-                        className="flex-grow"
-                        disabled={loading} // Disable input while loading
+                        className="flex-grow rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 p-2.5"
+                        disabled={loading}
                     />
-                    <Button type="submit" disabled={loading}>
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full sm:w-auto px-6 py-2.5 rounded-md bg-blue-600 text-white font-medium shadow-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2">
+                        {loading && (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        )}
                         {loading ? "Processing..." : "Summarize"}
                     </Button>
                 </form>
                 {formError && (
-                    <p className="text-red-500 mt-2 text-sm">{formError}</p>
+                    <p className="text-red-500 mt-3 text-sm">{formError}</p>
                 )}
             </CardContent>
         </Card>
