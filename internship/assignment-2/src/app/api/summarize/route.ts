@@ -70,7 +70,6 @@ export async function POST(req: NextRequest) {
         }
 
         // 4. Save summary in Supabase
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { data: supabaseData, error: supabaseError } = await supabase
             .from("summaries")
             .insert([
@@ -106,13 +105,23 @@ export async function POST(req: NextRequest) {
             supabaseId: insertedSupabaseId, // Optionally return Supabase ID
             mongoId: result.insertedId,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Summarize API Error:", error); // Log the full error on the server
+
+        let errorMessage = "An unexpected error occurred during scraping.";
+
+        if (
+            typeof error === "object" &&
+            error !== null &&
+            "message" in error &&
+            typeof error.message === "string"
+        ) {
+            errorMessage = error.message;
+        }
+
         return NextResponse.json(
             {
-                error:
-                    error.message ||
-                    "An unexpected error occurred during summarization.",
+                error: errorMessage,
             },
             { status: 500 }
         );
