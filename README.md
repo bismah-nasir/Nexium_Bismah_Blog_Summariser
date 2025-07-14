@@ -96,8 +96,11 @@ pnpm install
 Create a .env.local file in the root of your project and add your keys:
 
 NEXT_PUBLIC_SUPABASE_URL
+
 NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 MONGODB_URI
+
 GEMINI_API_KEY
 
 ### 4. Run the development server
