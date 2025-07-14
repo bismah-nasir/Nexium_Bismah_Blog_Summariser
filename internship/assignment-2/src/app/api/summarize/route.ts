@@ -44,12 +44,6 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // --- ADD THIS CONSOLE.LOG HERE ---
-        console.log("--- Full Text sent to Gemini ---");
-        console.log(fullText.substring(0, 1000) + "..."); // Log first 1000 characters to avoid flooding console
-        console.log("--- End Full Text ---");
-        // --- END CONSOLE.LOG ---
-
         // 2. Simulate AI Summary
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -94,7 +88,8 @@ export async function POST(req: NextRequest) {
                 `Failed to save summary to Supabase: ${supabaseError.message}`
             );
         }
-        // const insertedSupabaseId = supabaseData ? supabaseData[0].id : null; // Access the ID of the new record
+
+        const insertedSupabaseId = supabaseData ? supabaseData[0].id : null; // Access the ID of the new record
 
         // 5. Save full text in MongoDB
         const fullTextCollection = await getFullTextCollection();
@@ -108,7 +103,7 @@ export async function POST(req: NextRequest) {
             englishSummary,
             urduSummary,
             message: "Blog summarized and saved successfully!",
-            // supabaseId: insertedSupabaseId, // Optionally return Supabase ID
+            supabaseId: insertedSupabaseId, // Optionally return Supabase ID
             mongoId: result.insertedId,
         });
     } catch (error: any) {

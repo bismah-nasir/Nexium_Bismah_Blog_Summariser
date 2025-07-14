@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
         }
 
         const response = await fetch(url);
+
         if (!response.ok) {
             // Handle HTTP errors specifically
             if (response.status === 404) {
@@ -68,13 +69,22 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({ fullText: articleText });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Scraping API Error:", error); // Log the full error on the server
+
+        let errorMessage = "An unexpected error occurred during scraping.";
+
+        if (
+            typeof error === "object" &&
+            error !== null &&
+            "message" in error &&
+            typeof error.message === "string"
+        ) {
+            errorMessage = error.message;
+        }
         return NextResponse.json(
             {
-                error:
-                    error.message ||
-                    "An unexpected error occurred during scraping.",
+                error: errorMessage,
             },
             { status: 500 }
         );
