@@ -345,12 +345,10 @@ const transliterationMap: { [key: string]: string } = {
     bh: "بھ",
     dh: "دھ",
     jh: "جھ",
-    kh: "کھ",
     lh: "لھ",
     mh: "مھ",
     nh: "نھ",
     rh: "ڑھ",
-    th: "تھ", // aspirated consonants
     b: "ب",
     c: "س",
     d: "د",
@@ -389,8 +387,7 @@ const transliterationMap: { [key: string]: string } = {
     ance: "انس",
     al: "ال",
     ic: "ک",
-    y: "ای",
-    s: "س", // plural/possessive
+
     ed: "ڈ", // past tense (simplified)
 
     // Numbers (optional, but useful)
