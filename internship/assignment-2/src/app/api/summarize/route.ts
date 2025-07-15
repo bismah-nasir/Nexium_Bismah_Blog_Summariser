@@ -48,14 +48,16 @@ export async function POST(req: NextRequest) {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // Craft a good prompt for summarization
-        const prompt = `Summarize the following blog post content in English. Provide a detailed and comprehensive summary that covers all the key arguments, steps, and conclusions presented in the article. Aim for a length of approximately 200-300 words.
+        const prompt = `Summarize the following blog post content in English.
+        Provide a detailed and comprehensive summary that covers all the key arguments, steps, and conclusions presented in the article.
+        Format the summary as a bulleted list. Each main point should be a separate bullet.
 
         Blog Post Content:
         """
         ${fullText}
         """
 
-        Detailed Summary:`;
+        Detailed Summary (Bulleted List):`;
 
         const model_result = await model.generateContent(prompt);
         const response = await model_result.response;

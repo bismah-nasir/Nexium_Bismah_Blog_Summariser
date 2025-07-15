@@ -20,10 +20,10 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-purple-500 via-indigo-400 to-purple-600 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="container mx-auto max-w-2xl w-full">
-                <h1 className="text-5xl font-extrabold text-center mb-12 text-gray-800 drop-shadow-sm">
-                    Blog Summarizer
+                <h1 className="text-5xl font-extrabold text-center mb-12 text-white drop-shadow-xl flex items-center justify-center gap-2">
+                    <span>📰</span> Blog Summarizer
                 </h1>
 
                 {/* BlogForm component */}
@@ -36,7 +36,7 @@ export default function Home() {
 
                 {/* Display global API error if any */}
                 {error && (
-                    <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3 mt-4 text-sm text-center mb-8 shadow-sm">
+                    <p className="text-red-600 bg-red-100 border border-red-300 rounded-lg p-3 mt-4 text-sm text-center mb-8 shadow-md">
                         {error}
                     </p>
                 )}

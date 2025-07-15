@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
 
 interface SummaryCardsProps {
     englishSummary: string;
@@ -63,11 +64,12 @@ export default function SummaryCards({
                             </Button>
                         )}
                     </CardHeader>
-                    <CardContent className="text-gray-700 leading-relaxed text-base">
+
+                    <CardContent className="text-gray-700 leading-relaxed text-base prose prose-blue max-w-none">
                         {loading ? (
                             <SummarySkeleton />
                         ) : (
-                            <p>{englishSummary}</p>
+                            <ReactMarkdown>{englishSummary}</ReactMarkdown>
                         )}
                     </CardContent>
                 </Card>
@@ -92,8 +94,12 @@ export default function SummaryCards({
                             </Button>
                         )}
                     </CardHeader>
-                    <CardContent className="font-urdu rtl text-gray-700 leading-relaxed text-base">
-                        {loading ? <SummarySkeleton /> : <p>{urduSummary}</p>}
+                    <CardContent className="font-urdu rtl text-gray-700 leading-relaxed text-base prose prose-blue max-w-none">
+                        {loading ? (
+                            <SummarySkeleton />
+                        ) : (
+                            <ReactMarkdown>{urduSummary}</ReactMarkdown>
+                        )}
                     </CardContent>
                 </Card>
             )}
