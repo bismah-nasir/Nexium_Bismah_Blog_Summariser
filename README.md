@@ -137,7 +137,7 @@ pnpm start
 
 ## 📸 Screenshot
 
-![image_alt](https://github.com/bismah-nasir/Nexium_Bismah_Blog_Summariser/blob/65e31e3bfeaf102cd1abca2e25a12fa6e3d6609d/internship/assignment-2/src/public/blog_summarizer.PNG)
+![image_alt](https://github.com/bismah-nasir/Nexium_Bismah_Blog_Summariser/blob/fc843e6dd0ebc5799429a1dabf58d6df41ee0e10/internship/assignment-2/src/public/blog_summariser.PNG)
 
 ---
 
